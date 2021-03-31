@@ -34,7 +34,8 @@ function PollingProcessor(config, requestor) {
         }
       } else {
         if (respBody) {
-          const allData = JSON.parse(respBody);
+          respBody.then(body => {
+          const allData = body;
           const initData = {};
           initData[dataKind.features.namespace] = allData.flags;
           initData[dataKind.segments.namespace] = allData.segments;
@@ -45,6 +46,8 @@ function PollingProcessor(config, requestor) {
               poll(cb);
             }, sleepFor);
           });
+          })
+
         } else {
           // There wasn't an error but there wasn't any new data either, so just keep polling
           setTimeout(() => {

@@ -33,12 +33,12 @@ function Requestor(sdkKey, config) {
 
   function processResponse(cb) {
     return (response, body) => {
-      if (response.statusCode !== 200 && response.statusCode !== 304) {
-        const err = new Error('Unexpected status code: ' + response.statusCode);
-        err.status = response.statusCode;
+      if (response.status !== 200 && response.status !== 304) {
+        const err = new Error('Unexpected status code: ' + response.status);
+        err.status = response.status;
         cb(err, null);
       } else {
-        cb(null, response.statusCode === 304 ? null : body);
+        cb(null, response.status === 304 ? null : body);
       }
     };
   }
