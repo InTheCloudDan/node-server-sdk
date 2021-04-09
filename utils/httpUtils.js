@@ -1,7 +1,7 @@
 const http = require('http');
 const https = require('https');
 const url = require('url');
-
+import { httpRequest } from 'http-request';
 const packageJson = require('../package.json');
 
 const userAgent = 'NodeJSClient/' + packageJson.version;
@@ -38,7 +38,7 @@ function httpRequest(requestUrl, options, body, config, callback) {
     },
     options
   );
-  const req = https.get(allOptions, resp => {
+  const req = httpRequest(requestUrl, allOptions, resp => {
     let body = '';
     resp.on('data', chunk => {
       body += chunk;
