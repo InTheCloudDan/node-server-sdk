@@ -38,7 +38,7 @@ function httpRequest(requestUrl, options, body, config, callback) {
     },
     options
   );
-  const req = (isSecure ? https : http).request(allOptions, resp => {
+  const req = https.get(allOptions, resp => {
     let body = '';
     resp.on('data', chunk => {
       body += chunk;
