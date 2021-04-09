@@ -38,22 +38,15 @@ function httpRequest(requestUrl, options, body, config, callback) {
     },
     options
   );
-  const req = httpr(requestUrl, allOptions, resp => {
-    let body = '';
-    resp.on('data', chunk => {
-      body += chunk;
-    });
-    resp.on('end', () => {
-      callback(null, resp, body);
-    });
-  });
-  req.on('error', err => {
-    callback(err);
-  });
-  if (body !== null && body !== undefined) {
-    req.write(body);
-  }
-  req.end();
+  const resp = httpr(requestUrl, allOptions)
+  config.logger.debug(resp);
+  resp.then(result => {
+    config.logger.debug(result);
+    callback(null, result)
+  }).catch(err => {
+    config.logger.debug(err);
+    callback(err, null)
+  })
 }
 
 // Creates an in-memory etag cache and returns a wrapper for httpRequest that uses the cache. This is a
