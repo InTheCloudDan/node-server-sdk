@@ -1,5 +1,4 @@
 const FeatureStoreEventWrapper = require('./feature_store_event_wrapper');
-const FileDataSource = require('./file_data_source');
 const Requestor = require('./requestor');
 const EventEmitter = require('events').EventEmitter;
 const EventFactory = require('./event_factory');
@@ -415,7 +414,6 @@ const newClient = function(sdkKey, originalConfig) {
 
 module.exports = {
   init: newClient,
-  FileDataSource: FileDataSource,
   errors: errors,
 };
 

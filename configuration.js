@@ -1,4 +1,4 @@
-const winston = require('winston');
+const logger = require('pino')()
 const InMemoryFeatureStore = require('./feature_store');
 const messages = require('./messages');
 const LoggerWrapper = require('./logger_wrapper');
@@ -149,20 +149,7 @@ module.exports = (function() {
   }
 
   function fallbackLogger() {
-    const prefixFormat = winston.format(info => {
-      // eslint-disable-next-line no-param-reassign
-      info.message = `[LaunchDarkly] ${info.message ? info.message : ''}`;
-      return info;
-    });
-
-    return winston.createLogger({
-      level: 'info',
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(prefixFormat(), winston.format.simple()),
-        }),
-      ],
-    });
+    return logger
   }
 
   function validate(options) {

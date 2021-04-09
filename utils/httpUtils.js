@@ -3,7 +3,6 @@ const https = require('https');
 const url = require('url');
 
 const packageJson = require('../package.json');
-const { ConsoleTransportOptions } = require('winston/lib/winston/transports');
 
 const userAgent = 'NodeJSClient/' + packageJson.version;
 
