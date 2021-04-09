@@ -26,12 +26,12 @@ function getDefaultHeaders(sdkKey, config) {
 function httpRequest(requestUrl, options, body, config, callback) {
   // Note: https.request allows a url parameter to be passed separately from options, but only in v10.9.0+, so
   // we still have to parse the URL until our minimum Node version is increased.
-  const urlOpts = url.parse(requestUrl);
-  const isSecure = urlOpts.protocol === 'https:';
+  //const urlOpts = url.parse(requestUrl);
+  const isSecure = true;
   const allOptions = Object.assign(
     {},
     config && config.tlsParams,
-    urlOpts,
+    requestUrl,
     {
       timeout: config && config.timeout ? config.timeout * 1000 : undefined,
       agent: config && config.proxyAgent,
