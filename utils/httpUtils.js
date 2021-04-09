@@ -1,7 +1,6 @@
 const http = require('http');
 const https = require('https');
 const url = require('url');
-const fetch = require("node-fetch");
 
 const packageJson = require('../package.json');
 const { ConsoleTransportOptions } = require('winston/lib/winston/transports');
