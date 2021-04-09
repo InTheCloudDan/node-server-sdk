@@ -27,7 +27,7 @@ function httpRequest(requestUrl, options, body, config, callback) {
   // Note: https.request allows a url parameter to be passed separately from options, but only in v10.9.0+, so
   // we still have to parse the URL until our minimum Node version is increased.
   const urlOpts = url.parse(requestUrl);
-  //const isSecure = urlOpts.protocol === 'https:';
+  const isSecure = urlOpts.protocol === 'https:';
   const allOptions = Object.assign(
     {},
     config && config.tlsParams,
@@ -38,34 +38,22 @@ function httpRequest(requestUrl, options, body, config, callback) {
     },
     options
   );
-  config.logger && config.logger.debug(requestUrl);
-  config.logger && config.logger.debug(allOptions);
-  allOptions.body = body
-  const resp = fetch(requestUrl, allOptions)
-  config.logger.debug(resp);
-  resp.then(result => {
-    config.logger.debug(result);
-    callback(null, result)
-  }).catch(err => {
-    config.logger.debug(err);
-    callback(err, null)
-  })
-  // (isSecure ? https : http).request(allOptions, resp => {
-  //   let body = '';
-  //   resp.on('data', chunk => {
-  //     body += chunk;
-  //   });
-  //   resp.on('end', () => {
-  //     callback(null, resp, body);
-  //   });
-  // });
-  // req.on('error', err => {
-  //   callback(err);
-  // });
-  // if (body !== null && body !== undefined) {
-  //   req.write(body);
-  // }
-  // req.end();
+  const req = (isSecure ? https : http).request(allOptions, resp => {
+    let body = '';
+    resp.on('data', chunk => {
+      body += chunk;
+    });
+    resp.on('end', () => {
+      callback(null, resp, body);
+    });
+  });
+  req.on('error', err => {
+    callback(err);
+  });
+  if (body !== null && body !== undefined) {
+    req.write(body);
+  }
+  req.end();
 }
 
 // Creates an in-memory etag cache and returns a wrapper for httpRequest that uses the cache. This is a
@@ -82,23 +70,21 @@ function httpWithETagCache() {
       const newHeaders = Object.assign({}, options && options.headers, { 'if-none-match': cachedEtag });
       newOptions = Object.assign({}, options, { headers: newHeaders });
     }
-    newOptions.body = body
-    const getResp = fetch(requestUrl, newOptions)
-    getResp.then((resp) => {
-      if (resp.status === 304 && cacheEntry) {
-        return callback(null, resp, cacheEntry.body);
+    return httpRequest(requestUrl, newOptions, body, config, (err, resp, body) => {
+      if (err) {
+        callback(err);
       } else {
-        if (resp.headers['etag']) {
-          const respBody = resp.json()
-          cache[requestUrl] = { etag: resp.headers['etag'], respBody };
+        if (resp.statusCode === 304 && cacheEntry) {
+          callback(null, resp, cacheEntry.body);
+        } else {
+          if (resp.headers['etag']) {
+            cache[requestUrl] = { etag: resp.headers['etag'], body };
+          }
+          callback(null, resp, body);
         }
-        const body = resp.json()
-        return callback(null, resp, body);
       }
-    }).catch((err) => {
-      return callback(err)
-    })
-    }
+    });
+  };
 }
 
 module.exports = {
