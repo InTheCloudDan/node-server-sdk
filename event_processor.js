@@ -191,6 +191,8 @@ function EventProcessor(sdkKey, config, errorReporter, diagnosticsManager) {
     }
   };
 
+  ep.close = () => {};
+
   ep.flush = function(callback) {
     logger.log("FLUSHING")
     return wrapPromiseCallback(
