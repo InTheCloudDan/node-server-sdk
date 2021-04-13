@@ -8,7 +8,6 @@ const httpUtils = require('./utils/httpUtils');
 const messages = require('./messages');
 const stringifyAttrs = require('./utils/stringifyAttrs');
 const wrapPromiseCallback = require('./utils/wrapPromiseCallback');
-import {logger} from 'log' // Import the logger module export function
 
 const userAttrsToStringifyForEvents = [
   'key',
@@ -194,7 +193,6 @@ function EventProcessor(sdkKey, config, errorReporter, diagnosticsManager) {
   ep.close = () => {};
 
   ep.flush = function(callback) {
-    logger.log("FLUSHING")
     return wrapPromiseCallback(
       new Promise((resolve, reject) => {
         if (shutdown) {
@@ -218,7 +216,6 @@ function EventProcessor(sdkKey, config, errorReporter, diagnosticsManager) {
         }
 
         eventsInLastBatch = worklist.length;
-        logger.log('Flushing %d events', worklist.length);
 
         tryPostingEvents(worklist, mainEventsUri, uuidv4(), resolve, reject, true);
       }),
