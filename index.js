@@ -74,15 +74,15 @@ const newClient = function(sdkKey, originalConfig) {
   const eventFactoryWithReasons = EventFactory(true);
 
   if (config.eventProcessor) {
-    eventProcessor = config.eventProcessor;
-  } else {
-    if (config.offline || !config.sendEvents) {
-      eventProcessor = NullEventProcessor();
-    } else {
-      const diagnosticId = diagnostics.DiagnosticId(sdkKey);
-      diagnosticsManager = diagnostics.DiagnosticsManager(config, diagnosticId, new Date().getTime());
+  //   eventProcessor = config.eventProcessor;
+  // } else {
+  //   if (config.offline || !config.sendEvents) {
+  //     eventProcessor = NullEventProcessor();
+  //   } else {
+  //     const diagnosticId = diagnostics.DiagnosticId(sdkKey);
+  //     diagnosticsManager = diagnostics.DiagnosticsManager(config, diagnosticId, new Date().getTime());
       eventProcessor = EventProcessor(sdkKey, config, maybeReportError, diagnosticsManager);
-    }
+  //  }
   }
 
   if (!sdkKey && !config.offline) {
