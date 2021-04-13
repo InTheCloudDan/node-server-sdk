@@ -281,22 +281,6 @@ function EventProcessor(sdkKey, config, errorReporter, diagnosticsManager) {
     );
   }
 
-  const flushTimer = setInterval(() => {
-    ep.flush().then(
-      () => {},
-      () => {}
-    );
-  }, config.flushInterval * 1000);
-
-  const flushUsersTimer = setInterval(() => {
-    userKeysCache.removeAll();
-  }, config.userKeysFlushInterval * 1000);
-
-  ep.close = () => {
-    clearInterval(flushTimer);
-    clearInterval(flushUsersTimer);
-    diagnosticsTimer && clearInterval(diagnosticsTimer);
-  };
 
   if (!config.diagnosticOptOut && diagnosticsManager) {
     const initEvent = diagnosticsManager.createInitEvent();
