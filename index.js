@@ -54,7 +54,6 @@ const newClient = function(sdkKey, originalConfig) {
     failure,
     requestor,
     updateProcessor,
-    eventProcessor,
     waitForInitializationPromise;
 
   const config = configuration.validate(originalConfig);
@@ -73,7 +72,7 @@ const newClient = function(sdkKey, originalConfig) {
   const eventFactoryDefault = EventFactory(false);
   const eventFactoryWithReasons = EventFactory(true);
 
-  if (config.eventProcessor) {
+  //if (config.eventProcessor) {
   //   eventProcessor = config.eventProcessor;
   // } else {
   //   if (config.offline || !config.sendEvents) {
@@ -81,9 +80,9 @@ const newClient = function(sdkKey, originalConfig) {
   //   } else {
   //     const diagnosticId = diagnostics.DiagnosticId(sdkKey);
   //     diagnosticsManager = diagnostics.DiagnosticsManager(config, diagnosticId, new Date().getTime());
-      eventProcessor = EventProcessor(sdkKey, config, maybeReportError, diagnosticsManager);
+  const eventProcessor = EventProcessor(sdkKey, config, maybeReportError, diagnosticsManager);
   //  }
-  }
+  //}
 
   if (!sdkKey && !config.offline) {
     throw new Error('You must configure the client with an SDK key');
