@@ -58,46 +58,20 @@ function cfFeatureStoreInternal(storeName, options) {
     }
   }
 
-  async function getFlags(flagKeys, results) {
-    for (var i = 0; i < flagKeys.length; i++) {
-      const foundFlag = await storeName.get(flagKeys[i].name)
-      const parsedFlag = JSON.parse(foundFlag)
-      results[parsedFlag.key] = parsedFlag
-    }
-  }
-
-  // store.initOrderedInternal = (collection, cb) => {
-  //   insertKind(collection).then(() => {
-  //     (function() { cb && cb(); })();
-  //   })
-  // }
-
   store.initInternal = async (allData, cb) => {
     await insertKindAll(allData)
-    console.log('data inserted')
     cb && cb()
   }
 
-  store.upsertInternal = (kind, item, cb) => {
-    const itemKey = `${fullPrefix(kind)}${key}`
-    storeName.put(itemKey, item)
-  }
+  store.upsertInternal = (kind, item, cb) => {}
 
   async function insertKindAll(allData) {
-    console.log('inserting data')
-    console.log(allData)
     await storeName.put('featureData', JSON.stringify(allData))
-    console.log('after insert')
   }
 
   store.initializedInternal = async (maybeCallback) => {
     const cb = maybeCallback || noop
-    // Needs real logic
-    await storeName.get("featureData", (err, item) => {
-      const parseData = JSON.parse(item)
-      cache.set('features', parseData['features'])
-      cache.set('segments', parseData['segments'])
-    })
+    // Needs real logic. Now immediately returns after update for cron worker.
     (function() { cb && cb(); })();
   }
 
