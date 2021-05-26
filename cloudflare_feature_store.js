@@ -90,7 +90,7 @@ function cfFeatureStoreInternal(storeName, options) {
     console.log('after insert')
   }
 
-  store.initializedInternal = maybeCallback => {
+  store.initializedInternal = async (maybeCallback) => {
     const cb = maybeCallback || noop
     // Needs real logic
     await storeName.get("featureData", (err, item) => {
