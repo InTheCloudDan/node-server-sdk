@@ -45,8 +45,7 @@ function cfFeatureStoreInternal(storeName, options) {
     const cb = maybeCallback || noop
     const results = {}
     const kindData = cache.get(kind.namespace)
-    console.log(`cache key:  ${kindData}`)
-    console.log(kind.namespace)
+
     if (kindData == undefined) {
       storeName.get('featureData').then(item => {
         const parseData = JSON.parse(item)
@@ -74,11 +73,9 @@ function cfFeatureStoreInternal(storeName, options) {
   // }
 
   store.initInternal = async (allData, cb) => {
-    await insertKindAll(allData).then(() => {
-      console.log('data inserted')(function() {
-        cb && cb()
-      })()
-    })
+    await insertKindAll(allData)
+    console.log('data inserted')
+    cb && cb()
   }
 
   store.upsertInternal = (kind, item, cb) => {
@@ -88,39 +85,19 @@ function cfFeatureStoreInternal(storeName, options) {
 
   async function insertKindAll(allData) {
     console.log('inserting data')
-    storeName.put('featureData', JSON.stringify(allData))
+    await storeName.put('featureData', JSON.stringify(allData))
     console.log('after insert')
   }
 
-  async function insertKind(collection) {
-    //for (const kindNamespace in collection) {
-    //console.log(collection)
-    //if (Object.hasOwnProperty.call(allData, kindNamespace)) {
-    const items = collection
-    for (const item in items) {
-      const namespace = items[item]
-      for (const entry in namespace.items) {
-        const entryVal = namespace.Items[entry]
-        //console.log(entryVal)
-        const itemKey = `${fullPrefix(namespace.kind.namespace)}${entryVal.key}`
-        console.log(itemKey)
-        storeName.put(itemKey, JSON.stringify(entryVal), {
-          metadata: { version: entryVal.version },
-        })
-      }
-      //if (Object.hasOwnProperty.call(items, key)) {
-
-      //}
-    }
-    //}
-    //}
-  }
   store.initializedInternal = maybeCallback => {
     const cb = maybeCallback || noop
     // Needs real logic
-    storeName.get(initedKey, (err, obj) => {
-      cb(true)
+    await storeName.get("featureData", (err, item) => {
+      const parseData = JSON.parse(item)
+      cache.set('features', parseData['features'])
+      cache.set('segments', parseData['segments'])
     })
+    (function() { cb && cb(); })();
   }
 
   // KV Binding is done outside of the application logic.
