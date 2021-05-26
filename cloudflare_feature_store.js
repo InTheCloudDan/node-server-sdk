@@ -73,7 +73,7 @@ function cfFeatureStoreInternal(storeName, options) {
   // }
 
   store.initInternal = async (allData, cb) => {
-    insertKindAll(allData)
+    await insertKindAll(allData)
     console.log('data inserted')
     cb && cb()
   }
@@ -86,7 +86,7 @@ function cfFeatureStoreInternal(storeName, options) {
   async function insertKindAll(allData) {
     console.log('inserting data')
     console.log(allData)
-    storeName.put('featureData', JSON.stringify(allData))
+    await storeName.put('featureData', JSON.stringify(allData))
     console.log('after insert')
   }
 
